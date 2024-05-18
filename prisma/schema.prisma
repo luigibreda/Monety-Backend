@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid()) @map("_id")
+  name          String
+  email         String
+  password      String
+  isAdmin       Boolean   @default(false)
+  ativo         Boolean   @default(true)
+  refresh_token String?
+  arquivos      Arquivos[] 
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Arquivos {
+  id        String    @id @default(uuid()) @map("_id")
+  nome      String
+  path      String
+  filename  String
+  userId    String
+  downloads String?
+  tamanho   String?
+  estado    Int  @default(0)  
+  tipo      String?  
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Videos {
+  id        String    @id @default(uuid()) @map("_id")
+  name      String
+  price     Int
+  userId    String
+}
