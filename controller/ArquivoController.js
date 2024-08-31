@@ -1,3 +1,4 @@
+import { put } from '@vercel/blob';
 import { PrismaClient } from "@prisma/client"
 import jwt from "jsonwebtoken"
 import fs from "fs"
@@ -438,6 +439,14 @@ export const deleteArquivo = async (req, res) => {
 export const enviaArquivo = async (req, res) => {
   try {
 
+    const refreshToken = req.cookies.refreshToken
+
+    if (!refreshToken) return res.sendStatus(401)
+
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+      if (err) return res.sendStatus(403)
+    })
+
     const userId = req.usuario.userId;
 
 
@@ -465,14 +474,20 @@ export const enviaArquivo = async (req, res) => {
     const file = req.files[0];
 
     // Extrai as informações do arquivo
-    const { originalname, filename, path } = file;
+    const { originalname, buffer } = file;
+
+    // Define o caminho e o nome do arquivo no Vercel Blob Storage
+    const blobPath = `arquivos/${originalname}`;
+
+    // Faz o upload do arquivo para o Vercel Blob Storage
+    const { url } = await put(blobPath, buffer, { access: 'public' });
 
     // Salva o arquivo no banco de dados
     const arquivo = await prisma.arquivos.create({
       data: {
         nome: originalname,
-        path: path,
-        filename: filename,
+        path: url,
+        filename: originalname,
         userId: userId,
         tipo: file.mimetype,
         tamanho: String(file.size)
