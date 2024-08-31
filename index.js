@@ -13,6 +13,8 @@ const app = express()
 const allowedOrigins = [
   "https://monety.vercel.app",
   "https://monetyapp.com.br",
+  "https://monety.vercel.app/",
+  "http://monety.vercel.app/",
   "http://localhost"
 ];
 
