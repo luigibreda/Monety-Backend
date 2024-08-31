@@ -12,10 +12,6 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: `http://localhost:${process.env.PORT || 3000}`,
-      description: 'Servidor local',
-    },
-    {
       url: `https://monety-backend.vercel.app`,
       description: 'Servidor Vercel',
     },
