@@ -38,11 +38,12 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+// Swagger
+swaggerDocs(app);
+
 // Routes
 app.use(UsuariosRoute);
 app.use(ArquivosRoute);
 
-// Swagger
-swaggerDocs(app);
 
 app.listen(process.env.PORT, () => console.log("Server is running... port: " + process.env.PORT));
